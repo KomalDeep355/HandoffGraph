@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Explore contributor risk, project knowledge, and hand-off plans with HandoffGraph.">
+  <title>HandoffGraph — Repository intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="main-content" id="top">
+      <header class="topbar">
+        <a class="brand" href="#top">
+          <span class="brand-mark">H</span>
+          <span>
+            <strong>handoffgraph</strong>
+            <small>REPOSITORY INTELLIGENCE</small>
+          </span>
+        </a>
+        <div class="repo-pill">
+          <span class="status-dot" id="api-indicator"></span>
+          <span id="api-status">Connecting to API…</span>
+        </div>
+        <button id="refresh-btn" class="icon-btn" title="Refresh analysis" aria-label="Refresh analysis">↻</button>
+      </header>
+
+      <main class="dashboard">
+        <section class="welcome-row">
+          <div>
+            <p class="eyebrow">YOUR REPOSITORY, DECODED</p>
+            <h1>Know your team's <span>weak links.</span></h1>
+            <p class="subtitle">Find ownership gaps. Understand risk. Plan the hand-off.</p>
+          </div>
+          <div class="repo-context">
+            <div class="repo-badge">
+              <span>⌘</span>
+              <div>
+                <strong id="repo-name">Graph intelligence</strong>
+                <small id="repo-subtitle">Evidence-backed analysis</small>
+              </div>
+            </div>
+            <form id="repo-switcher" class="repo-switcher">
+              <label for="repo-url">Switch repository</label>
+              <div class="repo-switcher-controls">
+                <input id="repo-url" type="url" placeholder="https://github.com/owner/repo" maxlength="500" required>
+                <button type="submit" id="load-repo" class="secondary-btn">Load repository</button>
+              </div>
+              <p id="repo-status" role="status"></p>
+            </form>
+          </div>
+        </section>
+
+        <section class="metric-grid" aria-label="Repository overview">
+          <article class="metric-card">
+            <span class="metric-icon violet">⌘</span>
+            <span class="metric-label">Modules at risk</span>
+            <strong id="risk-count">—</strong>
+            <small>Modules surfaced by graph analysis</small>
+          </article>
+          <article class="metric-card">
+            <span class="metric-icon cyan">◎</span>
+            <span class="metric-label">Key contributors</span>
+            <strong id="people-count">—</strong>
+            <small>Contributors in the current graph</small>
+          </article>
+          <article class="metric-card">
+            <span class="metric-icon coral">⌁</span>
+            <span class="metric-label">Knowledge gaps</span>
+            <strong id="gap-count">—</strong>
+            <small>Files needing attention</small>
+          </article>
+          <article class="metric-card">
+            <span class="metric-icon green">↗</span>
+            <span class="metric-label">Handoff plans</span>
+            <strong id="handoff-count">0</strong>
+            <small>Plans generated this session</small>
+          </article>
+        </section>
+
+        <section class="workspace-grid">
+          <article class="panel graph-panel">
+            <div class="panel-heading graph-heading">
+              <div>
+                <p class="eyebrow">RELATIONSHIP EXPLORER</p>
+                <h2>Repository graph</h2>
+                <p class="panel-subtitle">Explore people, files, and module dependencies.</p>
+              </div>
+              <button id="fit-graph" class="secondary-btn secondary-button">Fit graph</button>
+            </div>
+
+            <div class="graph-filters" id="graph-filters" aria-label="Filter graph nodes">
+              <button class="filter-chip active" data-filter="all" aria-pressed="true">All nodes</button>
+              <button class="filter-chip" data-filter="person" aria-pressed="false">People</button>
+              <button class="filter-chip" data-filter="module" aria-pressed="false">Modules</button>
+              <button class="filter-chip" data-filter="file" aria-pressed="false">Files</button>
+              <button class="filter-chip" data-filter="successor" aria-pressed="false">Successors</button>
+            </div>
+
+            <div id="graph-container" class="graph-container">
+              <div id="graph" class="graph-canvas"></div>
+              <div id="graph-empty" class="graph-empty">
+                <span class="empty-icon">⌘</span>
+                <h3>Your repository map will appear here</h3>
+                <p>Run an analysis to explore real contributor relationships.</p>
+              </div>
+            </div>
+
+            <aside id="node-details" class="node-details" hidden>
+              <button id="close-node-details" class="secondary-btn" type="button">Close ×</button>
+              <p class="eyebrow">SELECTED NODE</p>
+              <h3 id="node-title">Node details</h3>
+              <p id="node-description"></p>
+            </aside>
+
+            <div class="graph-legend">
+              <span><i class="legend-dot person-dot"></i>People</span>
+              <span><i class="legend-dot module-dot"></i>Modules</span>
+              <span><i class="legend-dot file-dot"></i>Files</span>
+              <span><i class="legend-dot successor-dot"></i>Successors</span>
+            </div>
+            <div class="graph-footer"><span id="graph-summary">Waiting for graph data</span><span>Powered by <strong>FalkorDB</strong></span></div>
+          </article>
+
+          <aside class="panel assistant-panel">
+            <div class="panel-heading assistant-heading">
+              <div class="assistant-title-wrap">
+                <div class="assistant-avatar">✳</div>
+                <div>
+                  <p class="eyebrow">GRAPH-POWERED AI</p>
+                  <h2>Ask HandoffGraph</h2>
+                </div>
+              </div>
+              <span class="live-badge">● READY</span>
+            </div>
+
+            <div class="prompt-list" id="chips">
+              <button class="prompt-chip" data-prompt="Which modules have the highest key-person risk?"><span>◈</span> Find key-person risks</button>
+              <button class="prompt-chip" data-prompt="Which files have no clear successor?"><span>⌁</span> Find knowledge gaps</button>
+              <button class="prompt-chip" data-prompt="What happens if the main contributor leaves?"><span>↗</span> Simulate contributor loss</button>
+              <button class="prompt-chip" data-prompt="Create a hand-off plan for the highest-risk module."><span>✳</span> Create a hand-off plan</button>
+            </div>
+
+            <form id="ask-form" class="ask-form">
+              <label for="question">Ask about your repository</label>
+              <textarea id="question" rows="3" placeholder="Ask about ownership, risk, or hand-offs…" maxlength="1200" required></textarea>
+              <div class="ask-footer composer-footer">
+                <label class="checkbox-label issue-toggle">
+                  <input id="open-issues" type="checkbox">
+                  <span class="toggle-track"><span></span></span>
+                  Create GitHub issues
+                </label>
+                <button class="primary-btn primary-button" id="go" type="submit"><span>Analyze</span><span>↗</span></button>
+              </div>
+            </form>
+
+            <div class="chat-toolbar">
+              <span>Conversation</span>
+              <button type="button" id="new-chat" class="text-button">New chat</button>
+            </div>
+            <div id="chat-history" class="chat-history" aria-live="polite">
+              <p class="answer-placeholder">Ask a question to begin. Follow-ups will stay in this conversation.</p>
+            </div>
+            <div class="answer-actions" id="answer-actions" hidden>
+              <button class="text-button" id="copy-answer">Copy answer</button>
+              <button class="text-button" id="download-answer">Download .md</button>
+            </div>
+          </aside>
+        </section>
+
+        <section class="panel evidence-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">TRANSPARENCY LAYER</p>
+              <h2>Evidence &amp; tool activity</h2>
+              <p class="panel-subtitle">Inspect how the assistant reached its conclusions.</p>
+            </div>
+            <button id="trace-toggle" class="secondary-btn secondary-button" aria-expanded="false" aria-controls="trace-panel">Show evidence ↓</button>
+          </div>
+          <div id="trace-panel" class="trace-body" hidden>
+            <div id="trace-content"></div>
+            <span class="evidence-count" id="trace-count">0 calls</span>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
