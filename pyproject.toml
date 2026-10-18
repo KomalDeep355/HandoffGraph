@@ -1,2 +1,12 @@
+[project]
+name = "handoffgraph"
+version = "0.1.0"
+description = "Graph-based contributor ownership and handoff risk analysis"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+]
+
 [tool.vercel]
 entrypoint = "src.busfactor.server:app"
