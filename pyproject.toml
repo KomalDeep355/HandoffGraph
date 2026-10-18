@@ -1,0 +1,2 @@
+[tool.vercel]
+entrypoint = "src.busfactor.server:app"
