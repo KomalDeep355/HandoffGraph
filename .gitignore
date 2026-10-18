@@ -1,23 +1,20 @@
+# Environment and secrets
 .env
-.cache/
-__pycache__/
-out/*.md
-data/embedded.db*
-
-# Python
 .venv/
+
+# Python generated files
 __pycache__/
 *.py[cod]
 .pytest_cache/
-
-# Secrets
-.env
 
 # Local caches and generated output
 .cache/
 out/
 
-# Editor and OS files
+# Local databases
+data/embedded.db*
+
+# Editors and operating systems
 .vscode/
 .DS_Store
 Thumbs.db
