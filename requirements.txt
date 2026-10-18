@@ -5,3 +5,5 @@ openai>=1.30
 python-dotenv>=1.0
 requests>=2.31
 mcp>=1.2,<2
+
+pytest>=8.0
