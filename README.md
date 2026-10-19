@@ -8,8 +8,9 @@ HandoffGraph loads a repository's Git history into **FalkorDB** as a knowledge g
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688)](https://fastapi.tiangolo.com/)
 [![FalkorDB](https://img.shields.io/badge/Graph_DB-FalkorDB-7B61FF)](https://www.falkordb.com/)
 
-- **Live demo:** [ADD LINK, or see "Quick start" to run locally]
-- **Blog post:** [ADD DEV LINK]
+- **Live demo:** https://handoffgraph.onrender.com/
+- **Blog post:** https://dev.to/komal_deep_355/what-breaks-when-your-best-engineer-leaves-i-asked-a-graph-4khg
+- **Video link:** https://youtu.be/zoFgDCOhXvQ
 
 ---
 
