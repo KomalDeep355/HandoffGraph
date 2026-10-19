@@ -34,13 +34,26 @@ def module_of(path: str) -> str:
     return "/".join(d[:MODULE_DEPTH])
 
 
+
 def get_graph(graph_name=None):
-    if os.getenv("FALKORDB_EMBEDDED") == "1":  # test mode only (Linux/macOS)
+    if os.getenv("FALKORDB_EMBEDDED") == "1":  # test mode only
         from redislite.falkordb_client import FalkorDB
         db = FalkorDB(str(ROOT / "data" / "embedded.db"))
     else:
         from falkordb import FalkorDB
-        db = FalkorDB(host=os.getenv("FALKORDB_HOST", "localhost"),
-                      port=int(os.getenv("FALKORDB_PORT", "6379")),
-                      password=os.getenv("FALKORDB_PASSWORD") or None)
+
+        password = os.getenv("FALKORDB_PASSWORD")
+        username = os.getenv("FALKORDB_USERNAME") or None
+        use_tls = os.getenv("FALKORDB_TLS", "false").strip().lower() in {
+            "1", "true", "yes"
+        }
+
+        db = FalkorDB(
+            host=os.getenv("FALKORDB_HOST", "localhost"),
+            port=int(os.getenv("FALKORDB_PORT", "6379")),
+            username=username,
+            password=password or None,
+            ssl=use_tls,
+        )
+
     return db.select_graph(graph_name or GRAPH_NAME)
